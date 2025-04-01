@@ -3,6 +3,7 @@ package org.joonzis.mapper;
 import java.util.List;
 
 import org.joonzis.domain.BoardVO;
+import org.joonzis.domain.Criteria;
 
 
 
@@ -17,4 +18,7 @@ public interface BoardMapper {
 	public int delete(int bno);
 //	// 게시글 수정 - 제목, 내용, 작성자, 수정 날짜 변경
 	public int update(BoardVO vo);
+	// 페이징 추가
+	public List<BoardVO> getListWithPaging(Criteria cri);
+	public int getTotalRecordCount();
 }

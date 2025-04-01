@@ -17,9 +17,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		3. resultType : 리턴 데이터의 타입 (풀 패키지로 작성)
 			- insert, update, delete의 경우 무조건 int 형식이기 때문에 작성할 필요가 없다
 	 -->
-	 <select id="getList" resultType="org.joonzis.domain.BoardVO">
-	 	SELECT * FROM TBL_BOARD
+	 <select id="getListWithPaging" resultType="org.joonzis.domain.BoardVO">
+	 	<![CDATA[
+			select *
+			from (select bno, writer, title, regdate, ROWNUM rn
+				from (select bno, writer, title, regdate
+				    from tbl_board
+				    order by bno desc)
+				where rownum <= #{pageNum} * #{amount})
+			where rn > (#{pageNum} - 1) * #{amount}
+		]]>
 	 </select>
+	 <select id="getTotalRecordCount" resultType="int">
+		SELECT COUNT(*) FROM TBL_BOARD
+	</select>
 	 
 	 <insert id="insert" parameterType="org.joonzis.domain.BoardVO">
 	 	INSERT INTO TBL_BOARD VALUES(

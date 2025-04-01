@@ -1,6 +1,8 @@
 package org.joonzis.controller;
 
 import org.joonzis.domain.BoardVO;
+import org.joonzis.domain.Criteria;
+import org.joonzis.domain.PageDTO;
 import org.joonzis.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,9 +25,21 @@ public class BoardController {
 	
 	// 게시글 전체 조회
 	@GetMapping("/list" )
-	public String list(Model model) {
+	public String list(Model model, Criteria cri) {
 		log.info("list...");
-		model.addAttribute("list", service.getList());
+		
+		int pageNum = cri.getPageNum();
+		int amount = cri.getAmount();
+		
+		cri = new Criteria(pageNum, amount);
+		
+		int total = service.getTotalRecordCount();
+		PageDTO pdto = new PageDTO(cri, total);
+		
+		model.addAttribute("list", service.getListWithPaging(cri));
+		model.addAttribute("pageMaker", pdto);
+
+		System.out.println(total);
 		return "/board/list";
 	}
 	
@@ -52,21 +66,30 @@ public class BoardController {
 		return "/board/get";
 	}
 	
+	@GetMapping("/modify")
+	public String modify(@RequestParam("bno") int bno, Model model) {
+		log.info("modify..." + bno);
+		model.addAttribute("vo", service.get(bno));
+		
+		return "/board/modify";
+	}
+	
 	// 게시글 수정
 	@PostMapping("/modify")
-	public String modify(BoardVO vo, RedirectAttributes rttr) {
+	public String modify(BoardVO vo, Criteria cri, RedirectAttributes rttr) {
+		
 		log.info("modify..." + vo);
 		if(service.modify(vo)) {
 			rttr.addFlashAttribute("result", "success");
 		}
-		return "redirect:/board/modify";
+		return "redirect:/board/list?pageNum=" + cri.getPageNum() + "&amount=" + cri.getAmount();
 	}
 	
 	// 게시글 삭제
 	@PostMapping("/remove")
-	public String remove(int bno) {
+	public String remove(Criteria cri, int bno) {
 		log.info("remove..." + bno);
 		service.remove(bno);
-		return "redirect:/board/remove";
+		return "redirect:/board/list?pageNum=" + cri.getPageNum() + "&amount=" + cri.getAmount();
 	}
 }
