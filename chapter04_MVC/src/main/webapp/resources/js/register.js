@@ -12,8 +12,7 @@ const f = document.forms[0];
 let pageNum = new URLSearchParams(location.search).get('pageNum');
 let amount = new URLSearchParams(location.search).get('amount');
 
-console.log(pagenNum);
-// 버턴들 클릭 이벤트
+// 버튼들 클릭 이벤트
 // 새 게시글 등록 버턴 - register() 함수 호출
 document.querySelectorAll("button").forEach(btn => {
   btn.addEventListener('click', () => {

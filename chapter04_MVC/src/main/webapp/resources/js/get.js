@@ -11,6 +11,7 @@ document.head.appendChild(linkEle);
 let f = document.forms[0];
 let pageNum = new URLSearchParams(location.search).get('pageNum');
 let amount = new URLSearchParams(location.search).get('amount');
+let bno = new URLSearchParams(location.search).get('bno');
 
 console.log(pageNum);
 console.log(amount);
@@ -30,3 +31,22 @@ document.querySelectorAll('button').forEach(btn => {
     
   });
 });
+
+// --------------------------- 댓글 관련 스크립트 ------------------------
+const rs = replyService;
+
+// rs.add({
+//   reply : 'JS TEST',
+//   replyer : 'TESTER',
+//   bno : 30
+// }, 
+// function(result){
+//   alert("result : " + result);
+// });
+
+rs.getList(bno, jsonArray => {
+  // list이니까, 반복문 통해서 vo 콘솔에 출력
+  jsonArray.forEach(json => {
+    console.log(json)
+  })
+})
