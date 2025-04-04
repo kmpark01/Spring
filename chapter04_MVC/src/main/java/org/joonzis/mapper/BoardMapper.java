@@ -2,6 +2,7 @@ package org.joonzis.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.joonzis.domain.BoardVO;
 import org.joonzis.domain.Criteria;
 
@@ -21,4 +22,7 @@ public interface BoardMapper {
 	// 페이징 추가
 	public List<BoardVO> getListWithPaging(Criteria cri);
 	public int getTotalRecordCount();
+	
+	// 댓글 데이터 변경
+	public void updateReplyCnt(@Param("bno") int bno, @Param("amount") int amount);
 }

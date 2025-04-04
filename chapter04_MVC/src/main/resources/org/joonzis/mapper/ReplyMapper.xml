@@ -48,6 +48,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	 		WHERE rno=#{rno}
 	 </update>
 	 
+	 <update id="syncReplyCnt">
+		  UPDATE TBL_BOARD b
+		  SET replycnt = (
+		    SELECT COUNT(*) FROM TBL_REPLY r
+		    WHERE r.bno = b.bno
+  			)
+	</update>
+	 
 </mapper>
 
 

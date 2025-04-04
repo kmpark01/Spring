@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BoardVO {
-	int bno;
-	String title, content, writer;
-	Date regdate, updatedate;
+	private int bno, replycnt;
+	private String title, content, writer;
+	private Date regdate, updatedate;
 }

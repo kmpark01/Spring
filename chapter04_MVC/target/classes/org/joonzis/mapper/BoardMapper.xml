@@ -20,8 +20,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	 <select id="getListWithPaging" resultType="org.joonzis.domain.BoardVO">
 	 	<![CDATA[
 			select *
-			from (select bno, writer, title, regdate, ROWNUM rn
-				from (select bno, writer, title, regdate
+			from (select bno, writer, title, regdate, ROWNUM rn, replycnt
+				from (select bno, writer, title, regdate, replycnt
 				    from tbl_board
 				    order by bno desc)
 				where rownum <= #{pageNum} * #{amount})
@@ -33,7 +33,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	 
 	 <insert id="insert" parameterType="org.joonzis.domain.BoardVO">
-	 	INSERT INTO TBL_BOARD VALUES(
+	 	INSERT INTO TBL_BOARD (bno, title, content, writer, regdate, updatedate) 
+	 	VALUES(
 	 		seq_board.nextval,
 	 		#{title},
 	 		#{content},
@@ -58,6 +59,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	 			WRITER=#{writer},
 	 			UPDATEDATE=sysdate
 	 		WHERE BNO=#{bno}
+	 </update>
+	 
+	 <update id="updateReplyCnt" parameterType="org.joonzis.domain.BoardVO">
+	 	UPDATE TBL_BOARD
+	 		SET replycnt = replyCnt + #{amount}
+	 		WHERE bno = #{bno}
 	 </update>
 </mapper>
 

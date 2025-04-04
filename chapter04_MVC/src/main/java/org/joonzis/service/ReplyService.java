@@ -6,7 +6,8 @@ import org.joonzis.domain.ReplyVO;
 
 public interface ReplyService {
 	// 댓글 삽입
-	public int insert(ReplyVO vo);
+	int insert(ReplyVO vo);
+
 	// 댓글 목록
 	public List<ReplyVO> getList(int bno);
 	// 댓글 읽기
