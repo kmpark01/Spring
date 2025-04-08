@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="org.joonzis.mapper.BoardAttachMapper"> <!-- 경로 표기법이 클래스명 표기법처럼 사용된다! -->
+	<!-- 
+		mapper에서는 ?(물음표)를 사용할 수 없다.
+		대신 전달한 파라미터의 이름은 #{}을 통해 적는다.
+		sql문 뒤에 ;(세미콜론)이 없다.
+	 -->
+	
+	<!-- 
+		각 태그 속성
+		1. id : id를 통해서 sql문을 선택 (임의로 결정 가능)
+		2. parameterType : 매개변수의 타입
+		3. resultType : 리턴 데이터의 타입 (풀 패키지로 작성)
+			- insert, update, delete의 경우 무조건 int 형식이기 때문에 작성할 필요가 없다
+	 -->
+	 <insert id="insert" parameterType="org.joonzis.domain.BoardAttachVO">
+	 	INSERT INTO TBL_ATTACH
+	 		VALUES(
+	 			#{uuid},
+	 			#{uploadPath},
+	 			#{fileName},
+	 			#{bno}
+	 		)
+	 </insert>
+	 
+	 <delete id="delete" parameterType="String">
+	 	DELETE FROM TBL_ATTACH WHERE UUID=#{uuid}
+	 </delete>
+	 
+	 <select id="findByBno" resultType="org.joonzis.domain.BoardAttachVO">
+	 	SELECT * FROM TBL_ATTACH WHERE BNO=#{bno}
+	 </select>
+	 
+	 <select id="getUuid" resultType="org.joonzis.domain.BoardAttachVO">
+	 	SELECT * FROM TBL_ATTACH WHERE UUID=#{uuid}
+	 </select>
+</mapper>
+
+
+
+
+
+

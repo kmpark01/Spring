@@ -40,6 +40,21 @@
          <input type="hidden" name="amount" value="${cri.amount }"/>
       </form>
    </div>
+   <div class="file-container">
+      <div class="file-header">
+         <div class="file-title">
+            <a>첨부 파일</a>
+         </div>
+      </div>
+      <div class="file-body">
+      	<div class="uploadDiv">
+           <input type="file" name="uploadFile" multiple="multiple">
+         </div>
+         <div class="uploadResult">
+            <ul></ul>
+         </div>
+      </div>
+   </div>
    <div class="panel-body-btns">
       <button type="button" class="btn btn-sec" id="modifyBtn">수정</button>
       <button type="button" class="btn btn-thi" id="removeBtn">삭제</button>
@@ -47,5 +62,6 @@
    </div>
    <jsp:include page="../layout/footer.jsp"/>
    <script type="text/javascript" src="/resources/js/modify.js"></script>   
+   <script type="text/javascript" src="/resources/js/upload.js"></script>     
 </body>
 </html>

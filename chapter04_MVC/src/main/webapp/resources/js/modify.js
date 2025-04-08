@@ -11,6 +11,7 @@ document.head.appendChild(linkEle);
 const f = document.forms[0];
 let pageNum = new URLSearchParams(location.search).get('pageNum');
 let amount = new URLSearchParams(location.search).get('amount');
+let bno = new URLSearchParams(location.search).get('bno');
 
 //각 버튼 클릭 이벤트
 document.querySelectorAll('button').forEach(btn => {
@@ -28,6 +29,32 @@ document.querySelectorAll('button').forEach(btn => {
   });
 });
 
+//------------------- 첨부 파일 스크립트-------------------
+fetch(`/board/getAttachList/${bno}`)
+  .then(response => response.json())
+  .then(result => {
+    console.log(result);
+    showUploadFiles(result);
+  })
+  .catch(err => console.log(err));
+
+let uploadFilePath = document.querySelector('.uploadResult ul');
+function showUploadFiles(uploadResultArr){
+  if(!uploadResultArr || uploadResultArr.length == 0){
+    return;
+  }
+  let str = '';
+  uploadResultArr.forEach(file => {
+    const fileCallPath = encodeURIComponent(`${file.uploadPath}/s_${file.uuid}_${file.fileName}`);
+    str += `<li path="${file.uploadPath}" uuid="${file.uuid}" fileName="${file.fileName}">`;
+//    str += `<a href="/download?fileName=${fileCallPath}">${file.fileName}</a>`;
+     str += `<a>${file.fileName}</a>`;
+     str += `<span data-file=${fileCallPath}> X </span>`;
+    str += `</li>`;
+  });
+  uploadFilePath.innerHTML = str;
+}
+
 // 게시글 수정 이벤트
 function modify(){
   if(!f.title.value){
@@ -40,10 +67,23 @@ function modify(){
     return;
   }
   
-  f.action = `/board/modify?pageNum=${pageNum}&amount=${amount}`;
-  f.submit();
-}
-
+  // 첨부파일 li들 가져와서 반복문 돌리기
+  // 해당 li에 포함된 속동들 꺼내서 화면에 출력
+  	let str = '';
+	  document.querySelectorAll('.uploadResult ul li').forEach((li, index) => {
+	    let path = li.getAttribute('path');
+	    let uuid = li.getAttribute('uuid');
+	    let fileName = li.getAttribute('fileName');
+	    
+	    str += `<input type="hidden" name="attachList[${index}].fileName" value="${fileName}">`;
+	    str += `<input type="hidden" name="attachList[${index}].uuid" value="${uuid}">`;
+	    str += `<input type="hidden" name="attachList[${index}].uploadPath" value="${path}">`;
+	  });
+	  f.insertAdjacentHTML('beforeend', str);
+	  
+	  f.action = `/board/modify?pageNum=${pageNum}&amount=${amount}`;
+	  f.submit();
+	}
 // 게시글 삭제 이벤트
 function remove(){
   let bnoEle = f.bno; // bno를 담고 있는 input 태그
@@ -53,3 +93,30 @@ function remove(){
   f.action = `/board/remove?pageNum=${pageNum}&amount=${amount}`;
   f.submit();
 }
+
+
+//업로드 파일 삭제 이벤트
+document.querySelector('.uploadResult ul').addEventListener('click', function(e){
+	  if(e.target.tagName == 'SPAN'){
+	    let targetFile = e.target.getAttribute('data-file');
+
+	    fetch(`/deleteFile`,
+	      {
+	        method : 'post',
+	        body : targetFile,
+	        headers : {
+	          'Content-type' : 'text/plain'
+	        }
+	      }
+	    )
+	      .then(response => response.text())
+	      .then(result => {
+	        console.log(result);
+	        
+	        // 해당 코드 삭제
+	        let targetLi = e.target.closest('li');
+	        targetLi.remove();
+	      })
+	      .catch(err => console.log(err));
+	  }
+	});

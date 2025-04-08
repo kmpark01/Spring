@@ -3,9 +3,9 @@ let cloneObj = uploadDiv.firstElementChild.cloneNode(true);
 
 const regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
 const MAX_SIZE = 5242880; //5MB
+const fileInput = document.querySelector('input[type="file"]');
 
-const uploadBtn = document.querySelector('#uploadBtn');
-uploadBtn.addEventListener('click', () => {
+fileInput.addEventListener('change', () => {
   const formData = new FormData();
   const inputFile = document.querySelector('input[type="file"]');
   const files = inputFile.files;
@@ -27,14 +27,16 @@ uploadBtn.addEventListener('click', () => {
       console.log(data);
 
       // 부모 Element.replaceChild(newElement, oldElement)
-      uploadDiv.replaceChild(
-        cloneObj.cloneNode(true), 
-        uploadDiv.firstElementChild);
-
+//      uploadDiv.replaceChild(
+//        cloneObj.cloneNode(true), 
+//        uploadDiv.firstElementChild);
+      fileInput.value = '';
+      
         showUploadedFile(data);
     })
     .catch(err => console.log(err));
 })
+
 
 function checkExtension(fileName, fileSize){
   if(fileSize >= MAX_SIZE){
@@ -59,12 +61,13 @@ function showUploadedFile(uploadResultArr){
   let str = '';
   uploadResultArr.forEach(file => {
     let fileCallPath = encodeURIComponent(file.uploadPath + "/" + file.uuid + "_" + file.fileName);
-    str += `<li>`;
-    str += `<a href="/download?fileName=${fileCallPath}">${file.fileName}</a>`;
+    str += `<li path="${file.uploadPath}" uuid="${file.uuid}" fileName="${file.fileName}">`;
+//    str += `<a href="/download?fileName=${fileCallPath}">${file.fileName}</a>`;
+    str += `<a>${file.fileName}</a>`;
     str += `<span data-file=${fileCallPath}> X </span>`;
     str += `</li>`;
   });
-  uploadResult.innerHTML = str;
+  uploadResult.insertAdjacentHTML('beforeend', str);
 }
 
 uploadResult.addEventListener('click', function(e){
@@ -83,6 +86,10 @@ uploadResult.addEventListener('click', function(e){
       .then(response => response.text())
       .then(result => {
         console.log(result);
+        
+        // 해당 코드 삭제
+        let targetLi = e.target.closest('li');
+        targetLi.remove();
       })
       .catch(err => console.log(err));
   }

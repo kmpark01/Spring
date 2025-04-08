@@ -42,6 +42,20 @@
          <button type="button" class="btn btn-fir" id="indexBtn">목록으로 이동</button>
       </div>
    </div>
+   <div class="file-container">
+      <div class="file-header">
+         <div class="file-title">
+            <a>첨부 파일</a>
+         </div>
+      </div>
+      <div class="file-body">
+         <div class="uploadResult">
+            <ul></ul>
+         </div>
+      </div>
+   </div>
+   
+   
    <div class="panel-footer">
       <div class="panel-footer-header">
          <div class="panel-footer-title">

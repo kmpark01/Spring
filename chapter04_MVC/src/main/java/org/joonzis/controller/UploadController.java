@@ -9,7 +9,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import org.joonzis.domain.AttachFileDTO;
+import org.joonzis.domain.BoardAttachVO;
+import org.joonzis.mapper.BoardAttachMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -29,6 +31,9 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 @Controller
 public class UploadController {
+	
+	@Autowired
+	private BoardAttachMapper attachMapper;
 	
 	@GetMapping("/uploadForm")
 	public String uploadForm() {
@@ -54,12 +59,12 @@ public class UploadController {
 	
 	@ResponseBody
 	@PostMapping(value = "/uploadAsyncAction", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<List<AttachFileDTO>> uploadAsyncAction(MultipartFile[] uploadFile) {
+	public ResponseEntity<List<BoardAttachVO>> uploadAsyncAction(MultipartFile[] uploadFile) {
 		log.info("upload async post...");
 		
-		List<AttachFileDTO> list = new ArrayList<AttachFileDTO>();
+		List<BoardAttachVO> list = new ArrayList<BoardAttachVO>();
 		
-		String uploadFolder = "C:\\upload";
+		String uploadFolder = "C:\\upload\\temp";
 		
 		// 폴더 만들어주기
 		File uploadPath = new File(uploadFolder, getFolder());
@@ -71,7 +76,7 @@ public class UploadController {
 		
 		for(MultipartFile multipartFile : uploadFile) {
 			// 파일 정보를 담을 AttachDTO 객체 생성
-			AttachFileDTO attachDTO = new AttachFileDTO();
+			BoardAttachVO attachDTO = new BoardAttachVO();
 			
 			log.info("-----------------------------");
 			log.info("Upload File Name : " + multipartFile.getOriginalFilename());
@@ -100,7 +105,7 @@ public class UploadController {
 			}
 		}
 		
-		return new ResponseEntity<List<AttachFileDTO>>(list, HttpStatus.OK);
+		return new ResponseEntity<List<BoardAttachVO>>(list, HttpStatus.OK);
 	}
 	
 	// 파일 다운로드 메소드
@@ -112,7 +117,7 @@ public class UploadController {
 		Resource resource = new FileSystemResource("C:\\upload\\" + fileName);
 		log.info("resource..." + resource);
 		
-		String resourceName = resource.getFilename();
+		String resourceName = fileName.substring(fileName.indexOf("_") + 1);
 		HttpHeaders headers = new HttpHeaders();
 		
 		try {
@@ -123,6 +128,22 @@ public class UploadController {
 		return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
 	}
 	
+	// uuid 추출
+	private String extractUUID(String fileName) {
+		try {
+			fileName = URLDecoder.decode(fileName, "utf-8");
+			int sIdx = fileName.indexOf("s_");
+			if (sIdx != -1) {
+				int uuidStart = sIdx + 2;
+				int uuidEnd = fileName.indexOf("_", uuidStart);
+				return fileName.substring(uuidStart, uuidEnd);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	// 파일 삭제
 	@PostMapping("/deleteFile")
 	@ResponseBody
@@ -130,10 +151,16 @@ public class UploadController {
 		log.info("deleteFile..." + fileName);
 		
 		File file;
+		String uuid = extractUUID(fileName);
 		
 		try {
-			file = new File("C:\\upload\\" + URLDecoder.decode(fileName, "utf-8"));
-			file.delete();
+			file = new File("C:\\upload\\temp\\" + URLDecoder.decode(fileName, "utf-8"));
+			if(uuid != null) {
+				attachMapper.delete(uuid);
+				file.delete();
+			}else {
+				file.delete();				
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -141,6 +168,7 @@ public class UploadController {
 		return new ResponseEntity<String>("deleted", HttpStatus.OK);
 	}
 	
+
 	// 오늘 날짜의 경로를 문자열로 생성
 	private String getFolder() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

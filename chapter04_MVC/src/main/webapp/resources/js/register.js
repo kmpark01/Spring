@@ -15,6 +15,8 @@ let amount = new URLSearchParams(location.search).get('amount');
 // 버튼들 클릭 이벤트
 // 새 게시글 등록 버턴 - register() 함수 호출
 document.querySelectorAll("button").forEach(btn => {
+	// 🔒 기본 submit 방지
+  btn.setAttribute("type", "button"); 
   btn.addEventListener('click', () => {
     let type = btn.getAttribute("id");
     
@@ -27,6 +29,7 @@ document.querySelectorAll("button").forEach(btn => {
     }
   })
 })
+
 function register(){
   if(!f.title.value){
     alert("제목을 입력하세요.");
@@ -40,6 +43,23 @@ function register(){
     alert("내용을 입력하세요.");
     return;
   }
+  
+  // 첨부파일 li들 가져와서 반복문 돌리기
+  // 해당 li에 포함된 속동들 꺼내서 화면에 출력
+  let str = '';
+  document.querySelectorAll('.uploadResult ul li').forEach((li, index) => {
+    let path = li.getAttribute('path');
+    let uuid = li.getAttribute('uuid');
+    let fileName = li.getAttribute('fileName');
+    
+    str += `<input type="hidden" name="attachList[${index}].fileName" value="${fileName}">`;
+    str += `<input type="hidden" name="attachList[${index}].uuid" value="${uuid}">`;
+    str += `<input type="hidden" name="attachList[${index}].uploadPath" value="${path}">`;
+  });
+
+//  f.innerHTML += str;
+  f.insertAdjacentHTML('beforeend', str);
+  console.log(f);
   f.action = '/board/register';
   f.submit();
 }

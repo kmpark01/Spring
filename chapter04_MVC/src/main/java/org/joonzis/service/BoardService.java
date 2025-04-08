@@ -2,6 +2,7 @@ package org.joonzis.service;
 
 import java.util.List;
 
+import org.joonzis.domain.BoardAttachVO;
 import org.joonzis.domain.BoardVO;
 import org.joonzis.domain.Criteria;
 
@@ -24,4 +25,7 @@ public interface BoardService {
 	// 페이징 기능 추가
 	public List<BoardVO> getListWithPaging(Criteria cri);
 	public int getTotalRecordCount();
+	
+	// 첨부 파일 리스트
+	public List<BoardAttachVO> getAttachLists(int bno);
 }

@@ -178,6 +178,42 @@ function modifyReplyModalStyle(){
   inputReplydate.setAttribute('readonly', true);
 }
 
+//------------------- 첨부 파일 스크립트-------------------
+fetch(`/board/getAttachList/${bno}`)
+  .then(response => response.json())
+  .then(result => {
+    console.log(result);
+    showUploadFiles(result);
+  })
+  .catch(err => console.log(err));
+
+let uploadFilePath = document.querySelector('.uploadResult ul');
+function showUploadFiles(uploadResultArr){
+  if(!uploadResultArr || uploadResultArr.length == 0){
+    return;
+  }
+  let str = '';
+  uploadResultArr.forEach(file => {
+	    let fileCallPath = encodeURIComponent(file.uploadPath + "/" + file.uuid + "_" + file.fileName);
+	    str += `<li path="${file.uploadPath}" uuid="${file.uuid}" fileName="${file.fileName}">`;
+	    str += `<a href="/download?fileName=${fileCallPath}">${file.fileName}</a>`;
+	    str += `</li>`;
+	  });
+  uploadFilePath.innerHTML = str;
+}
+
+//---------------------------- 유틸 함수-------------------
+
+// 유닉스 시간 변경
+function displayTime(unixTimeStemp){
+  let myDate = new Date(unixTimeStemp);
+
+  let date = myDate.getFullYear() + "-" +
+             (myDate.getMonth() + 1) + "-" +
+             myDate.getDate();
+
+  return date;
+}
 
 // rs.add({
 //   reply : 'JS TEST',
@@ -211,14 +247,3 @@ function modifyReplyModalStyle(){
 //   alert("result : " + result);
 // });
 
-
-// 유닉스 시간 변경
-function displayTime(unixTimeStemp){
-  let myDate = new Date(unixTimeStemp);
-
-  let date = myDate.getFullYear() + "-" +
-             (myDate.getMonth() + 1) + "-" +
-             myDate.getDate();
-
-  return date;
-}
