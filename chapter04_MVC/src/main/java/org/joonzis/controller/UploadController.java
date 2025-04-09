@@ -147,25 +147,33 @@ public class UploadController {
 	// 파일 삭제
 	@PostMapping("/deleteFile")
 	@ResponseBody
-	public ResponseEntity<String> deleteFile(@RequestBody String fileName){
-		log.info("deleteFile..." + fileName);
-		
-		File file;
-		String uuid = extractUUID(fileName);
-		
-		try {
-			file = new File("C:\\upload\\temp\\" + URLDecoder.decode(fileName, "utf-8"));
-			if(uuid != null) {
-				attachMapper.delete(uuid);
-				file.delete();
-			}else {
-				file.delete();				
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-		return new ResponseEntity<String>("deleted", HttpStatus.OK);
+	public ResponseEntity<String> deleteFile(@RequestBody List<String> fileNames) {
+	    log.info("deleteFile..." + fileNames);
+
+	    for (String fileName : fileNames) {
+	        try {
+	            String uuid = extractUUID(fileName);
+	            String decodedName = URLDecoder.decode(fileName, "utf-8");
+	            File file;
+
+	            if (uuid != null) {
+	                file = new File("C:\\upload\\" + decodedName);
+	                attachMapper.delete(uuid);
+	            } else {
+	                file = new File("C:\\upload\\temp\\" + decodedName);
+	            }
+
+	            if (file.exists()) {
+	                file.delete();
+	            }
+
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	    }
+
+	    return new ResponseEntity<>("deleted", HttpStatus.OK);
 	}
 	
 

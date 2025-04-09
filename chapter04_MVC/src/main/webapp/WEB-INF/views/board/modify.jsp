@@ -38,6 +38,7 @@
          </table>
          <input type="hidden" name="pageNum" value="${cri.pageNum }"/>
          <input type="hidden" name="amount" value="${cri.amount }"/>
+         <input type="hidden" name="deleteFilesJson" id="deleteFilesJson">
       </form>
    </div>
    <div class="file-container">
@@ -62,6 +63,6 @@
    </div>
    <jsp:include page="../layout/footer.jsp"/>
    <script type="text/javascript" src="/resources/js/modify.js"></script>   
-   <script type="text/javascript" src="/resources/js/upload.js"></script>     
+   <!-- <script type="text/javascript" src="/resources/js/upload.js"></script>      -->
 </body>
 </html>

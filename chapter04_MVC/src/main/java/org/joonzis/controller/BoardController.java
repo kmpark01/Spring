@@ -123,7 +123,7 @@ public class BoardController {
 	
 	// 게시글 수정
 	@PostMapping("/modify")
-	public String modify(BoardVO vo, Criteria cri, RedirectAttributes rttr) {
+	public String modify(BoardVO vo, Criteria cri, RedirectAttributes rttr, String fileName) {
 		String tempBase = "C:\\upload\\temp";
 	    String finalBase = "C:\\upload";
 	    
@@ -167,10 +167,10 @@ public class BoardController {
 	}
 	
 	// 오늘 날짜의 경로를 문자열로 생성
-		private String getFolder() {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			Date date = new Date();
-			String str = sdf.format(date);
-			return str.replace("-", File.separator);
-		}
+	private String getFolder() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();
+		String str = sdf.format(date);
+		return str.replace("-", File.separator);
+	}
 }
