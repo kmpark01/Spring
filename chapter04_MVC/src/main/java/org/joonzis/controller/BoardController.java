@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -69,6 +70,7 @@ public class BoardController {
 	}
 	
 	// 게시글 등록
+	@PreAuthorize("isAuthenticated()") // 인증된 사용자면 true
 	@PostMapping("/register")
 	public String register(BoardVO vo) {
 	    String tempBase = "C:\\upload\\temp";
@@ -99,6 +101,7 @@ public class BoardController {
 	}
 	
 	// 게시글 등록
+	@PreAuthorize("isAuthenticated()") // 인증된 사용자면 true
 	@GetMapping("/register")
 	public void register2() {
 		log.info("register...");

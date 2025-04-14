@@ -217,8 +217,8 @@
 		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
 		<dependency>
 		    <groupId>org.springframework.security</groupId>
-		    <artifactId>spring-security-core</artifactId>
-		    <version>5.0.6.RELEASE</version>
+		    <artifactId>spring-security-taglibs</artifactId>
+		    <version>5.0.6.RELEASE</version> <!-- Use the correct version matching your Spring Security -->
 		</dependency>
 	</dependencies>
     <build>

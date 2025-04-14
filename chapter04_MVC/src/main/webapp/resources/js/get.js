@@ -92,7 +92,7 @@ function registerModalPage(){
   regReplyModalStyle();
   // input 내용 초기화
   inputReply.value = '';
-  inputReplyer.value = '';
+  inputReplyer.value = principal.username;
   openModal();
 }
 
@@ -149,6 +149,10 @@ function modifyReply(){
     alert("수정할 댓글을 입력하세요");
     return;
   }
+  if(inputReplyer.value != principal.username){
+	  alert("댓글 작성자만 수정할 수 있습니다.");
+	  return;
+  }
   rs.update({
     reply : inputReply.value,
     rno : rno
@@ -161,6 +165,10 @@ function modifyReply(){
 
 // 댓글 삭제
 function removeReply(){
+	if(inputReplyer.value != principal.username){
+		alert("댓글 작성자만 삭제할 수 있습니다.");
+		return;
+	}
   rs.remove(rno, function(result){
     closeModal();
     showList();
