@@ -176,4 +176,20 @@ public class BoardController {
 		String str = sdf.format(date);
 		return str.replace("-", File.separator);
 	}
+<<<<<<< HEAD
+=======
+	
+	// 회원 가입 페이지 이동
+	@GetMapping("/joinPage")
+	public String goJoinPage() {
+		log.info("joinPage");
+		return "/board/joinPage";
+	}
+	
+	// 관리자 페이지 이동
+	@GetMapping("/adminPage")
+	public void goAdminPage() {
+		log.info("adminPage");
+	}
+>>>>>>> 443ad65 (추가)
 }

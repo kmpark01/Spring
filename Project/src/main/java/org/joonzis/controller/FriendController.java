@@ -18,6 +18,10 @@ public class FriendController {
 	
 	@GetMapping("/test")
 	public void test() {
+<<<<<<< HEAD
 		log.info("테스트");
+=======
+		log.info("수정");
+>>>>>>> 443ad65 (추가)
 	}
 }
